@@ -81,3 +81,35 @@ export const loginUsr = async(req, res)=>{
         });
     }
 }
+//UPLOAD PROFILE
+export const uploadProfile = async(req, res)=>{
+    try {
+        if(!req.file){
+            return res.status(400).json({
+                success: false,
+                message: 'No image uploaded yet'
+            })
+        }
+        const imagePath = req.file.path;
+        const user = await userModel.findOne({_id: req.user._id})
+         if(!user){
+        return res.status(403).json({
+            success: false,
+            message: 'Invalide or expired token'
+        });
+       }
+       //update profile
+       user.profileImg = imagePath;
+       await user.save();
+
+        res.status(203).json({
+            success: true,
+            message: 'profile image uploaded successfully'
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
