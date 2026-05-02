@@ -1,7 +1,9 @@
 import express from 'express'
-import { registerUser, loginUsr } from '../controllers/authController.js';
+import { registerUser, loginUsr, uploadProfile } from '../controllers/authController.js';
 import { refreshToken } from '../utils/refreshToken.js';
 import { forgotPassword, resetPassword } from '../utils/resetPassword.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import upload from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
 
@@ -11,5 +13,5 @@ router.post('/login', loginUsr);
 router.post('/refresh', refreshToken)
 router.post('/forgot-password', forgotPassword)
 router.put('/reset-password/:token', resetPassword)
-
+router.put('/upload-profile-img', authMiddleware, upload.single('profile'), uploadProfile);
 export default router;
