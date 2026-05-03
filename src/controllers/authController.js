@@ -1,38 +1,38 @@
 import bcrypt from "bcryptjs";
-import {registerJoi} from '../utils/validation.js'
+import { registerJoi } from '../utils/validation.js'
 import userModel from "../model/userModel.js";
 import cookieParser from "cookie-parser";
 import { generateAccessToken, generateRefreshToken } from "../utils/generateToken.js";
 
 //SIGN UP
-export const registerUser = async(req, res)=>{
+export const registerUser = async (req, res) => {
     try {
-       const {error} = registerJoi.validate(req.body, {abortEarly: false});
-       if(error){
-        const messages = error.details.map(err => err.message);
-         return res.status(400).json({message: messages});
-       }
-       //check existance
-       const {name, email, password} = req.body;
-       const userExist = await userModel.findOne({email});
-       if(userExist){
-        return res.status(409).json({
-            success: false,
-            message: 'User already exists'
+        const { error } = registerJoi.validate(req.body, { abortEarly: false });
+        if (error) {
+            const messages = error.details.map(err => err.message);
+            return res.status(400).json({ message: messages });
+        }
+        //check existance
+        const { name, email, password } = req.body;
+        const userExist = await userModel.findOne({ email });
+        if (userExist) {
+            return res.status(409).json({
+                success: false,
+                message: 'User already exists'
+            });
+        }
+        //hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await userModel.create({
+            name,
+            email,
+            password: hashedPassword
         });
-       }
-       //hash password
-       const hashedPassword = await bcrypt.hash(password, 10);
-       const user = await userModel.create({
-        name,
-        email,
-        password: hashedPassword
-       });
-       res.status(203).json({
-        success: true,
-        message: 'User registered successfully',
-        user
-       })  
+        res.status(203).json({
+            success: true,
+            message: 'User registered successfully',
+            user
+        })
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -42,12 +42,12 @@ export const registerUser = async(req, res)=>{
 }
 
 // LOGIN
-export const loginUsr = async(req, res)=>{
+export const loginUsr = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
         //check existance
-        const user = await userModel.findOne({email});
-        if(!user || !(await bcrypt.compare(password, user.password))){
+        const user = await userModel.findOne({ email });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({
                 success: false,
                 message: 'Invalid credential'
@@ -71,7 +71,7 @@ export const loginUsr = async(req, res)=>{
         res.status(200).json({
             success: true,
             message: 'Login Successfully!',
-            accessToken:accessToken
+            accessToken: accessToken
         });
 
     } catch (error) {
@@ -82,30 +82,53 @@ export const loginUsr = async(req, res)=>{
     }
 }
 //UPLOAD PROFILE
-export const uploadProfile = async(req, res)=>{
+export const uploadProfile = async (req, res) => {
     try {
-        if(!req.file){
+        if (!req.file) {
             return res.status(400).json({
                 success: false,
                 message: 'No image uploaded yet'
             })
         }
         const imagePath = req.file.path;
-        const user = await userModel.findOne({_id: req.user._id})
-         if(!user){
-        return res.status(403).json({
-            success: false,
-            message: 'Invalide or expired token'
-        });
-       }
-       //update profile
-       user.profileImg = imagePath;
-       await user.save();
+        const user = await userModel.findOne({ _id: req.user._id })
+        if (!user) {
+            return res.status(403).json({
+                success: false,
+                message: 'Invalide or expired token'
+            });
+        }
+        //update profile
+        user.profileImg = imagePath;
+        await user.save();
 
         res.status(203).json({
             success: true,
             message: 'profile image uploaded successfully'
         })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+//PROFILE
+export const userProfile = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const user = await userModel.findOne({ _id:id }).select('-password')
+        if (!user) {
+            return res.status(403).json({
+                success: false,
+                message: 'Invalide or expired token'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: user
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
