@@ -40,9 +40,9 @@ Environment Variables
 
 Create a ".env" file in the root directory and add:
 
-PORT=your_port
-MONGO_URI=your_mongodb_connection
-JWT_ACCESS_TOKEN_SECRET=your_secret
+PORT=your_port  
+MONGO_URI=your_mongodb_connection   
+JWT_ACCESS_TOKEN_SECRET=your_secret   
 JWT_REFRESH_TOKEN_SECRET=your_secret
 
 __________________________________________
