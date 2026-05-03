@@ -63,14 +63,14 @@ API Endpoints
 
 Authentication Routes
 
-Method| Endpoint| Description
-POST| /api/auth/register| Register user
-POST| /api/auth/login| Login user
-POST| /api/auth/refresh| Refresh accessbtoken
-POST| /api/auth/forgot-password| Request password reset
-PUT| /api/auth/reset-password| Reset password
-GET| /api/auth/profile| protected user profile
-PUT| /api/auth/upload-profile-img| Protected upload of profile image
+Method| Endpoint| Description   
+POST| /api/auth/register| Register user   
+POST| /api/auth/login| Login user   
+POST| /api/auth/refresh| Refresh accessbtoken   
+POST| /api/auth/forgot-password| Request password reset   
+PUT| /api/auth/reset-password| Reset password   
+GET| /api/auth/profile| protected user profile    
+PUT| /api/auth/upload-profile-img| Protected upload of profile image   
 
 __________________________________________
 
