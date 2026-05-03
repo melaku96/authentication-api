@@ -36,26 +36,6 @@ Technologies Used
 
 __________________________________________
 
-Project Structure
-
-authentication-api/
-│
-├── src/
-│   ├── config/
-│   ├── controllers/
-│   ├── middlewares/
-│   ├── model/
-│   ├── routes/
-│   ├── uploads/
-│   ├── utils/
-│   ├── app.js
-│   └── server.js
-│
-├── .env
-└── package.json
-
-__________________________________________
-
 Environment Variables
 
 Create a ".env" file in the root directory and add:
